@@ -1,0 +1,56 @@
+/** Fixed simulation & rhythm constants — balance tweaks go here. */
+export const GAME_CONFIG = {
+  TICK_RATE: 60,
+  TICK_MS: 1000 / 60,
+
+  /** Race */
+  DEFAULT_TRACK_LENGTH: 1000,
+  DEFAULT_RACE_DURATION_MS: 75_000,
+  QUICK_RACE_DURATION_MS: 60_000,
+  DEFAULT_BPM: 120,
+  CLUTCH_PROGRESS_THRESHOLD: 0.82,
+  CLUTCH_REQUIRED_TAPS: 5,
+  CLUTCH_WINDOW_MS: 3000,
+  BOOST_MULTIPLIER: 1.5,
+  BOOST_DURATION_MS: 3000,
+  CAPSIZE_SYNC_THRESHOLD: 30,
+  CAPSIZE_PENALTY_MS: 2000,
+
+  /** Rhythm windows (ms from beat) */
+  PERFECT_WINDOW_MS: 50,
+  GOOD_WINDOW_MS: 120,
+
+  /** Sync / stamina */
+  SYNC_INITIAL: 50,
+  SYNC_MIN: 0,
+  SYNC_MAX: 100,
+  SYNC_PERFECT_GAIN: 8,
+  SYNC_GOOD_GAIN: 3,
+  SYNC_MISS_LOSS: 12,
+  SYNC_HOLD_GAIN: 5,
+  STAMINA_INITIAL: 100,
+  STAMINA_PERFECT_COST: 2,
+  STAMINA_GOOD_COST: 3,
+  STAMINA_MISS_COST: 8,
+  STAMINA_HOLD_RECOVERY: 4,
+  STAMINA_LOW_THRESHOLD: 30,
+
+  /** Speed formula weights */
+  BASE_SPEED: 0.00045,
+  SYNC_SPEED_WEIGHT: 0.4,
+  PERFECT_RATE_WEIGHT: 0.3,
+  UPGRADE_BOAT_BONUS: 0.000028,
+  UPGRADE_CREW_STAMINA: 5,
+
+  /** Visual-only — water parallax in RaceScene (not used in simulation) */
+  VISUAL_WATER_SCROLL_BASE: 0.35,
+  VISUAL_WATER_PARALLAX_MULT: 3200,
+
+  /** AI */
+  AI_BASE_PERFECT_RATE: 0.65,
+
+  /** Replay */
+  REPLAY_VERSION: 1,
+} as const;
+
+export type GameConfig = typeof GAME_CONFIG;

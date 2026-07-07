@@ -1,0 +1,38 @@
+---
+description: Core project context for Ngo Boat Race
+alwaysApply: true
+---
+
+# Ngo Boat Race — Soc Trang
+
+Rhythm-racing H5 game (Vite + TypeScript + Phaser 3 + Fastify API). Inspired by **Oóc Om Bóc** / Khmer Ngo boat festival on the **Maspéro River**, Soc Trang.
+
+## Run locally
+
+```bash
+npm install
+npm run dev:all   # game :5173, API :3000
+```
+
+## Conventions
+
+- **Default language: English** — toggle EN/VN via top-right `LangToggle`
+- ESL-friendly English in UI; avoid gaming slang
+- Terminology: **Rhythm** (drum timing), **Crowd cheer** (finish burst), **Maspéro** (river name)
+- **Beta** — do not git commit unless the user explicitly asks
+- Minimize diff scope; match existing patterns in surrounding code
+
+## Layout
+
+| Path | Role |
+|------|------|
+| `src/` | Game client — Phaser scenes, DOM UI, i18n, rhythm engine |
+| `server/` | Fastify API — leaderboard, daily seed, guest auth, JSON file DB |
+| `src/content/festival/` | Canonical Festival article (en.md, vi.md) |
+| `tests/unit/` | Vitest — run `npm test` before push |
+
+## Architecture split
+
+- **Phaser (canvas):** race visuals — water, boats, parallax
+- **DOM (HTML):** menus, HUD, Settings, Festival scroll, i18n
+- Race input captured on DOM → sent to `RaceController`

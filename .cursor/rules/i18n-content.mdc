@@ -1,0 +1,26 @@
+---
+description: i18n and Festival content sync rules
+globs: src/i18n/**,src/content/**
+alwaysApply: false
+---
+
+# i18n & Festival content
+
+## i18n
+
+- Catalog: `src/i18n/en.ts` (source of truth for keys), `src/i18n/vi.ts` must mirror all keys
+- UI strings: `data-i18n` attributes or `t('key')` — never hardcode user-facing text
+- Locale refresh: `registerLocaleRefresh()` re-applies strings on EN/VN toggle
+
+## Festival article
+
+- **Canonical in-app:** `src/content/festival/en.md` and `vi.md`
+- Rendered via `festivalContent.ts` with stable section IDs (`FESTIVAL_SECTION_IDS`)
+- `FestivalScreen` preserves scroll anchor on locale change
+- Repo essay `le-hoi-ooc-om-boc.md` is bilingual combined — keep synced with in-app files
+
+## Cultural notes
+
+- Oóc Om Bóc / Oc Om Bok — Khmer festival in Mekong Delta
+- Game is educational, not an official event site
+- Some mechanics are simplified vs real festival

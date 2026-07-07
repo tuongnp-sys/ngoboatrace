@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ngoboatrace-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npx tsx server/src/index.ts
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production

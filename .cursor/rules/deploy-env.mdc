@@ -1,0 +1,42 @@
+---
+description: Deploy, env vars, and secrets hygiene
+globs: vite.config.ts,server/**,.env*,vercel.json,render.yaml
+alwaysApply: false
+---
+
+# Deploy & environment
+
+## Split deploy
+
+| Service | Host | Build / start |
+|---------|------|---------------|
+| Frontend | **Vercel** | `npm run build` → output `dist/` |
+| API | **Render** | `npx tsx server/src/index.ts` |
+
+## Critical env vars
+
+**Vercel (set at BUILD time — Vite embeds these):**
+
+- `VITE_API_URL` — **required in production** (e.g. `https://your-api.onrender.com`)
+- `VITE_APP_VERSION`, feature flags — see `.env.example`
+
+**Render:**
+
+- `PORT` — auto-set by Render
+
+If `VITE_API_URL` is empty, API calls hit the static host and fail (404).
+
+## PWA & assets
+
+- Run `npm run icons` before release — commits `public/icons/`, favicon, apple-touch-icon
+- Service Worker registers only in **production** (`import.meta.env.PROD`)
+- Install button needs HTTPS deploy; localhost dev often has no `beforeinstallprompt`
+
+## Do not commit
+
+- `.env`, `.env.local`
+- `server/data/db.json` (local dev DB with tokens) — use `db.json.example`
+
+## API storage note
+
+Server uses `server/data/db.json` (file). On Render free tier, data resets on redeploy unless persistent disk is added.

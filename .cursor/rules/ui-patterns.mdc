@@ -1,0 +1,34 @@
+---
+description: UI screen patterns and Home/Settings UX
+globs: src/ui/**,src/styles/**
+alwaysApply: false
+---
+
+# UI patterns
+
+## Home screen
+
+- **Quick Play** — green `btn-play` (primary action)
+- **Oóc Om Bóc Festival** — yellow `btn-festival`
+- Secondary menu: Story, Daily, Leaderboard, **Settings only** (no separate offline shortcut)
+- Home is scrollable — avoid cutting off bottom buttons
+
+## Settings screen (order)
+
+1. PWA / offline install (top, blue-tinted section)
+2. Network status
+3. Offline feature list
+4. Preferences (sound)
+5. Data (clear progress, pending sync)
+
+## PWA UX (simplified)
+
+- Show **Install app** button when `beforeinstallprompt` fires
+- Otherwise show **one platform hint** (iOS / Android / desktop)
+- Full 3-step guide lives in collapsed `<details>` — not shown by default
+- Dev-only note when install prompt unavailable on localhost
+
+## Styles
+
+- Global styles: `src/styles/main.css`
+- Match existing button classes: `btn`, `btn-primary`, `btn-secondary`, `btn-play`, `btn-festival`
