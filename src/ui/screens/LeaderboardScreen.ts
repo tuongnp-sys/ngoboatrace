@@ -2,6 +2,7 @@ import { env } from '@/config/env';
 import { apiClient } from '@/services/network/ApiClient';
 import { offlineDetector } from '@/services/network/OfflineDetector';
 import { applyI18n, registerLocaleRefresh } from '@/i18n';
+import { escapeHtml } from '@/utils/displayName';
 import { gameStateMachine } from '@/state/GameStateMachine';
 import type { LeaderboardEntry } from '@/types/api.types';
 
@@ -90,7 +91,7 @@ export class LeaderboardScreen {
         (e) => `
         <div class="lb-row ${e.rank <= 3 ? 'lb-row--top' : ''}">
           <span class="lb-rank">#${e.rank}</span>
-          <span class="lb-name">${e.displayName}</span>
+          <span class="lb-name">${escapeHtml(e.displayName)}</span>
           <span class="lb-score">${e.score}</span>
           <span class="lb-perfect">${Math.round(e.perfectRate * 100)}%</span>
         </div>`,

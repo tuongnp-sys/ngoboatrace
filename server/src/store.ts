@@ -55,3 +55,17 @@ export function saveDb(db: DbState): void {
 export function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
 }
+
+/** Prefer current player profile name over the snapshot stored on the score row. */
+export function resolveDisplayName(db: DbState, score: DbScore): string {
+  const player = db.players.find((p) => p.id === score.playerId);
+  return player?.displayName ?? score.displayName;
+}
+
+export function syncScoresDisplayName(db: DbState, playerId: string, displayName: string): void {
+  for (const score of db.scores) {
+    if (score.playerId === playerId) {
+      score.displayName = displayName;
+    }
+  }
+}

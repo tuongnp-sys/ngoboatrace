@@ -1,5 +1,6 @@
 import { apiClient } from '@/services/network/ApiClient';
 import type { GuestAuthResponse } from '@/types/api.types';
+import { sanitizeDisplayName } from '@/utils/displayName';
 
 const DEVICE_KEY = 'ngoboatrace_device_id';
 const TOKEN_KEY = 'ngoboatrace_token';
@@ -15,15 +16,16 @@ function getDeviceId(): string {
 
 export class AuthService {
   async ensureGuest(displayName = 'Người chơi'): Promise<GuestAuthResponse | null> {
+    const safeName = sanitizeDisplayName(displayName);
     const cached = localStorage.getItem(TOKEN_KEY);
     if (cached) {
       apiClient.setToken(cached);
-      return { token: cached, playerId: '', displayName };
+      return { token: cached, playerId: '', displayName: safeName };
     }
 
     const res = await apiClient.post<GuestAuthResponse>('/auth/guest', {
       deviceId: getDeviceId(),
-      displayName,
+      displayName: safeName,
     });
 
     if (!res.ok) return null;

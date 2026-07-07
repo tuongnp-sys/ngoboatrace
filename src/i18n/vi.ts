@@ -114,6 +114,12 @@ export const vi: Record<keyof typeof en, string> = {
   'settings.pwa.androidHint': 'Trên Android: menu trình duyệt → Cài app hoặc Thêm vào màn hình chính.',
   'settings.prefs.heading': 'Tùy chọn',
   'settings.prefs.sound': 'Tiếng trống',
+  'settings.profile.heading': 'Hồ sơ',
+  'settings.profile.displayName': 'Tên hiển thị',
+  'settings.profile.displayNameHint':
+    'Hiện trên bảng xếp hạng Thử thách hôm nay (tối đa 21 ký tự). Mỗi máy một tên — không cần đăng nhập.',
+  'settings.profile.save': 'Lưu tên',
+  'settings.profile.saved': '✓ Đã lưu tên.',
   'settings.data.heading': 'Dữ liệu trên máy này',
   'settings.data.pending': '⏳ {count} mục chờ đồng bộ khi có mạng.',
   'settings.data.clear': '🗑 Xóa tiến độ local',

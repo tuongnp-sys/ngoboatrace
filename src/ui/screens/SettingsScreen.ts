@@ -6,6 +6,12 @@ import { syncQueue } from '@/services/sync/SyncQueue';
 import { createStorage } from '@/services/storage/IndexedDBStore';
 import { isSoundEnabled, setSoundEnabled } from '@/state/settingsStore';
 import { gameStateMachine } from '@/state/GameStateMachine';
+import { playerStore } from '@/state/stores/playerStore';
+import { syncManager } from '@/services/sync/SyncManager';
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  sanitizeDisplayName,
+} from '@/utils/displayName';
 
 export class SettingsScreen {
   private localeUnsub: (() => void) | null = null;
@@ -71,6 +77,24 @@ export class SettingsScreen {
       </section>
 
       <section class="settings-section">
+        <h3 class="settings-section__heading" data-i18n="settings.profile.heading"></h3>
+        <label class="settings-field">
+          <span class="settings-field__label" data-i18n="settings.profile.displayName"></span>
+          <input
+            type="text"
+            class="settings-field__input"
+            id="display-name"
+            maxlength="${DISPLAY_NAME_MAX_LENGTH}"
+            autocomplete="nickname"
+            enterkeyhint="done"
+          />
+        </label>
+        <p class="settings-hint" data-i18n="settings.profile.displayNameHint"></p>
+        <button type="button" class="btn btn-secondary settings-save-name-btn" id="save-display-name" data-i18n="settings.profile.save"></button>
+        <p class="settings-name-status" id="name-status" hidden data-i18n="settings.profile.saved"></p>
+      </section>
+
+      <section class="settings-section">
         <h3 class="settings-section__heading" data-i18n="settings.prefs.heading"></h3>
         <label class="settings-toggle">
           <span data-i18n="settings.prefs.sound"></span>
@@ -92,6 +116,18 @@ export class SettingsScreen {
     soundToggle.checked = isSoundEnabled();
     soundToggle.addEventListener('change', () => {
       setSoundEnabled(soundToggle.checked);
+    });
+
+    const displayNameInput = el.querySelector('#display-name') as HTMLInputElement;
+    displayNameInput.value = playerStore.get().displayName;
+    displayNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        void this.saveDisplayName(el, displayNameInput);
+      }
+    });
+    el.querySelector('#save-display-name')?.addEventListener('click', () => {
+      void this.saveDisplayName(el, displayNameInput);
     });
 
     const refresh = () => {
@@ -207,6 +243,31 @@ export class SettingsScreen {
     } catch {
       pendingEl.hidden = true;
     }
+  }
+
+  private async saveDisplayName(el: HTMLElement, input: HTMLInputElement): Promise<void> {
+    const statusEl = el.querySelector('#name-status') as HTMLElement;
+    const name = sanitizeDisplayName(input.value);
+    input.value = name;
+
+    const current = playerStore.get().displayName;
+    if (name === current) {
+      statusEl.hidden = false;
+      statusEl.textContent = t('settings.profile.saved');
+      window.setTimeout(() => {
+        statusEl.hidden = true;
+      }, 2000);
+      return;
+    }
+
+    await playerStore.update((p) => ({ ...p, displayName: name }));
+    await syncManager.saveProgress();
+
+    statusEl.hidden = false;
+    statusEl.textContent = t('settings.profile.saved');
+    window.setTimeout(() => {
+      statusEl.hidden = true;
+    }, 2500);
   }
 
   private async clearLocalData(): Promise<void> {

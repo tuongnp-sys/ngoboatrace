@@ -113,6 +113,12 @@ export const en = {
   'settings.pwa.androidHint': 'On Android: tap the browser menu → Install app or Add to Home screen.',
   'settings.prefs.heading': 'Preferences',
   'settings.prefs.sound': 'Drum sound',
+  'settings.profile.heading': 'Profile',
+  'settings.profile.displayName': 'Display name',
+  'settings.profile.displayNameHint':
+    'Shown on the Daily Challenge leaderboard (max 21 characters). One name per device — no login needed.',
+  'settings.profile.save': 'Save name',
+  'settings.profile.saved': '✓ Name saved.',
   'settings.data.heading': 'Data on this device',
   'settings.data.pending': '⏳ {count} item(s) waiting to sync when online.',
   'settings.data.clear': '🗑 Clear local progress',

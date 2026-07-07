@@ -41,6 +41,7 @@ export class SyncManager {
       return;
     }
 
+    await authService.ensureGuest(profile.displayName);
     await apiClient.put('/player/me', { profile: payload });
   }
 
