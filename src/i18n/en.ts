@@ -47,6 +47,8 @@ export const en = {
   'leaderboard.dailyOnly': 'Only Daily Challenge scores count on the leaderboard',
   'leaderboard.offlineQueued': 'Saved offline — will submit when online',
   'leaderboard.duplicateSubmit': 'You already submitted today',
+  'leaderboard.authError':
+    'Session expired (server was reset). Go to Settings, save your name again, then retry Daily Challenge.',
   'leaderboard.rank': '🏆 Today: #{rank} · {score} pts',
   'leaderboard.submitError': 'Score not accepted ({code})',
 
@@ -114,11 +116,13 @@ export const en = {
   'settings.prefs.heading': 'Preferences',
   'settings.prefs.sound': 'Drum sound',
   'settings.profile.heading': 'Profile',
+  'profile.defaultName': 'Player',
   'settings.profile.displayName': 'Display name',
   'settings.profile.displayNameHint':
     'Shown on the Daily Challenge leaderboard (max 21 characters). One name per device — no login needed.',
   'settings.profile.save': 'Save name',
   'settings.profile.saved': '✓ Name saved.',
+  'settings.profile.saveFailed': 'Could not sync to the server. Check your connection and try again.',
   'settings.data.heading': 'Data on this device',
   'settings.data.pending': '⏳ {count} item(s) waiting to sync when online.',
   'settings.data.clear': '🗑 Clear local progress',

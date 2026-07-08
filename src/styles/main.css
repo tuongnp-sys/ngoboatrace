@@ -837,6 +837,10 @@
   margin: 0.5rem 0 0;
 }
 
+.settings-name-status--error {
+  color: #fca5a5;
+}
+
 .settings-hint {
   font-size: 0.78rem;
   opacity: 0.75;

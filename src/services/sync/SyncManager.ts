@@ -31,18 +31,31 @@ export class SyncManager {
     }
   }
 
-  async saveProgress(): Promise<void> {
-    if (!env.features.cloudSave) return;
+  async saveProgress(): Promise<boolean> {
+    if (!env.features.cloudSave) return true;
     const profile = playerStore.get();
     const payload = { ...profile, displayName: profile.displayName };
 
     if (!offlineDetector.isOnline()) {
       await syncQueue.enqueue({ type: 'SAVE_PROGRESS', payload });
-      return;
+      return true;
     }
 
-    await authService.ensureGuest(profile.displayName);
-    await apiClient.put('/player/me', { profile: payload });
+    return this.putProfile(payload);
+  }
+
+  private async putProfile(payload: Record<string, unknown>, retried = false): Promise<boolean> {
+    const displayName =
+      typeof payload.displayName === 'string' ? payload.displayName : playerStore.get().displayName;
+    const authed = await authService.ensureGuest(displayName);
+    if (!authed) return false;
+
+    const res = await apiClient.put('/player/me', { profile: payload });
+    if (!res.ok && res.error.code === 'UNAUTHORIZED' && !retried) {
+      authService.logout();
+      return this.putProfile(payload, true);
+    }
+    return res.ok;
   }
 
   async submitScore(
@@ -79,17 +92,39 @@ export class SyncManager {
       };
     }
 
+    const authed = await authService.ensureGuest(profile.displayName);
+    if (!authed) {
+      return {
+        submitted: true,
+        accepted: false,
+        messageKey: 'leaderboard.authError',
+      };
+    }
+
     return this.postScore(payload);
   }
 
-  private async postScore(payload: SubmitScorePayload): Promise<LeaderboardSubmitInfo> {
+  private async postScore(
+    payload: SubmitScorePayload,
+    retried = false,
+  ): Promise<LeaderboardSubmitInfo> {
     const res = await apiClient.post<SubmitScoreResponse>('/scores', payload);
+
+    if (!res.ok && res.error.code === 'UNAUTHORIZED' && !retried) {
+      authService.logout();
+      const authed = await authService.ensureGuest(
+        payload.displayName ?? playerStore.get().displayName,
+      );
+      if (authed) return this.postScore(payload, true);
+    }
 
     if (!res.ok) {
       const messageKey =
         res.error.code === 'DUPLICATE_SUBMIT'
           ? 'leaderboard.duplicateSubmit'
-          : 'leaderboard.submitError';
+          : res.error.code === 'UNAUTHORIZED'
+            ? 'leaderboard.authError'
+            : 'leaderboard.submitError';
       return {
         submitted: true,
         accepted: false,
@@ -124,8 +159,20 @@ export class SyncManager {
             continue;
           }
         } else if (action.type === 'SUBMIT_SCORE') {
+          const authed = await authService.ensureGuest(
+            action.payload.displayName ?? playerStore.get().displayName,
+          );
+          if (!authed) {
+            remaining.push(action);
+            continue;
+          }
           const res = await apiClient.post('/scores', action.payload);
           if (!res.ok && res.error.code === 'OFFLINE') {
+            remaining.push(action);
+            continue;
+          }
+          if (!res.ok && res.error.code === 'UNAUTHORIZED') {
+            authService.logout();
             remaining.push(action);
             continue;
           }

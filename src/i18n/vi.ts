@@ -48,6 +48,8 @@ export const vi: Record<keyof typeof en, string> = {
   'leaderboard.dailyOnly': 'Chỉ Thử thách hôm nay được ghi BXH',
   'leaderboard.offlineQueued': 'Đã lưu offline — sẽ gửi BXH khi có mạng',
   'leaderboard.duplicateSubmit': 'Bạn đã gửi điểm hôm nay rồi',
+  'leaderboard.authError':
+    'Phiên hết hạn (server vừa reset). Vào Cài đặt, lưu tên lại, rồi chơi Thử thách hôm nay.',
   'leaderboard.rank': '🏆 BXH hôm nay: #{rank} · {score} điểm',
   'leaderboard.submitError': 'Không ghi nhận điểm ({code})',
 
@@ -115,11 +117,13 @@ export const vi: Record<keyof typeof en, string> = {
   'settings.prefs.heading': 'Tùy chọn',
   'settings.prefs.sound': 'Tiếng trống',
   'settings.profile.heading': 'Hồ sơ',
+  'profile.defaultName': 'Người chơi',
   'settings.profile.displayName': 'Tên hiển thị',
   'settings.profile.displayNameHint':
     'Hiện trên bảng xếp hạng Thử thách hôm nay (tối đa 21 ký tự). Mỗi máy một tên — không cần đăng nhập.',
   'settings.profile.save': 'Lưu tên',
   'settings.profile.saved': '✓ Đã lưu tên.',
+  'settings.profile.saveFailed': 'Không đồng bộ được lên server. Kiểm tra mạng và thử lại.',
   'settings.data.heading': 'Dữ liệu trên máy này',
   'settings.data.pending': '⏳ {count} mục chờ đồng bộ khi có mạng.',
   'settings.data.clear': '🗑 Xóa tiến độ local',

@@ -132,6 +132,7 @@ export class SettingsScreen {
 
     const refresh = () => {
       applyI18n(el);
+      displayNameInput.value = playerStore.get().displayName;
       this.updateNetwork(el);
       this.updatePwa(el);
       void this.updatePendingSync(el);
@@ -251,23 +252,19 @@ export class SettingsScreen {
     input.value = name;
 
     const current = playerStore.get().displayName;
-    if (name === current) {
-      statusEl.hidden = false;
-      statusEl.textContent = t('settings.profile.saved');
-      window.setTimeout(() => {
-        statusEl.hidden = true;
-      }, 2000);
-      return;
+    if (name !== current) {
+      await playerStore.update((p) => ({ ...p, displayName: name }));
     }
 
-    await playerStore.update((p) => ({ ...p, displayName: name }));
-    await syncManager.saveProgress();
+    const synced = await syncManager.saveProgress();
 
     statusEl.hidden = false;
-    statusEl.textContent = t('settings.profile.saved');
+    statusEl.textContent = synced ? t('settings.profile.saved') : t('settings.profile.saveFailed');
+    statusEl.className = synced ? 'settings-name-status' : 'settings-name-status settings-name-status--error';
     window.setTimeout(() => {
       statusEl.hidden = true;
-    }, 2500);
+      statusEl.className = 'settings-name-status';
+    }, synced ? 2500 : 4000);
   }
 
   private async clearLocalData(): Promise<void> {

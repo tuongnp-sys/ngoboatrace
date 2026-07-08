@@ -1,4 +1,5 @@
 import { createDefaultProfile, type PlayerProfile } from '@/types/player.types';
+import { getDefaultDisplayName } from '@/utils/displayName';
 import type { StorageAdapter } from './StorageAdapter';
 import { openDb, PROFILE_KEY, STORE_PLAYER } from './idb';
 
@@ -78,7 +79,7 @@ export async function loadOrCreateProfile(): Promise<PlayerProfile> {
   if (existing) return existing;
 
   const id = `guest_${Date.now().toString(36)}`;
-  const profile = createDefaultProfile(id);
+  const profile = createDefaultProfile(id, getDefaultDisplayName());
   await storage.saveProfile(profile);
   return profile;
 }

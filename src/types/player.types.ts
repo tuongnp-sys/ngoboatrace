@@ -25,7 +25,7 @@ export interface PlayerProfile {
   };
 }
 
-export function createDefaultProfile(id: string, displayName = 'Người chơi'): PlayerProfile {
+export function createDefaultProfile(id: string, displayName: string): PlayerProfile {
   return {
     id,
     displayName,

@@ -15,6 +15,7 @@ import { TeamSelectScreen } from '@/ui/screens/TeamSelectScreen';
 import { SettingsScreen } from '@/ui/screens/SettingsScreen';
 import { LangToggle } from '@/ui/components/LangToggle';
 import { apiClient } from '@/services/network/ApiClient';
+import { localizeDefaultDisplayName } from '@/utils/displayName';
 
 export class App {
   private root: HTMLElement;
@@ -44,6 +45,7 @@ export class App {
 
     await playerStore.init();
     loadSoundPreference();
+    this.registerLocaleDisplayNameSync();
     await syncManager.init();
     this.registerServiceWorker();
     await this.render('home');
@@ -150,6 +152,24 @@ export class App {
   private registerServiceWorker(): void {
     if ('serviceWorker' in navigator && import.meta.env.PROD) {
       navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+    }
+  }
+
+  private registerLocaleDisplayNameSync(): void {
+    gameEvents.on('locale:change', () => {
+      void this.syncDefaultDisplayNameForLocale();
+    });
+  }
+
+  private async syncDefaultDisplayNameForLocale(): Promise<void> {
+    try {
+      const current = playerStore.get().displayName;
+      const next = localizeDefaultDisplayName(current);
+      if (next === current) return;
+      await playerStore.update((p) => ({ ...p, displayName: next }));
+      await syncManager.saveProgress();
+    } catch {
+      /* playerStore not ready */
     }
   }
 

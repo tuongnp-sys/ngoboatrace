@@ -4,7 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { DAILY_MAX_MISSES, getDailySeed } from '../../src/config/daily.config.js';
 import type { ReplayPayload } from '../../src/types/race.types.js';
 import { validateDailySubmit, type SubmitBody } from './replayValidator.js';
-import { sanitizeDisplayName } from '../../src/utils/displayName.js';
+import { sanitizeDisplayName, SERVER_DEFAULT_DISPLAY_NAME } from '../../src/utils/displayName.js';
 import { loadDb, saveDb, todayKey, resolveDisplayName, syncScoresDisplayName, type DbPlayer, type DbScore } from './store.js';
 
 const PORT = Number(process.env.PORT ?? 3000);
@@ -30,7 +30,7 @@ function computeScore(rank: number, perfectRate: number, totalBoats: number): nu
 // POST /auth/guest
 app.post<{ Body: { deviceId: string; displayName?: string } }>('/auth/guest', async (req, reply) => {
   const { deviceId, displayName: rawName } = req.body ?? {};
-  const displayName = sanitizeDisplayName(rawName ?? '');
+  const displayName = sanitizeDisplayName(rawName ?? '', SERVER_DEFAULT_DISPLAY_NAME);
   if (!deviceId) {
     return reply.status(400).send({ ok: false, error: { code: 'INVALID_BODY', message: 'deviceId required' } });
   }

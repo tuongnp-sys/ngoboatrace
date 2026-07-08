@@ -1,11 +1,18 @@
 import type { PlayerProfile } from '@/types/player.types';
 import { loadOrCreateProfile, createStorage } from '@/services/storage/IndexedDBStore';
+import { localizeDefaultDisplayName } from '@/utils/displayName';
 
 let profile: PlayerProfile | null = null;
 
 export const playerStore = {
   async init(): Promise<PlayerProfile> {
     profile = await loadOrCreateProfile();
+    const displayName = localizeDefaultDisplayName(profile.displayName);
+    if (displayName !== profile.displayName) {
+      profile = { ...profile, displayName };
+      const storage = await createStorage();
+      await storage.saveProfile(profile);
+    }
     return profile;
   },
 
